@@ -2,11 +2,11 @@ const Course = require("../models/Course");
 const User = require("../models/User");
 
 exports.createCourse = async (req, res) => {
-  try {
-    const course = await Course.create(req.body);
-    res.status(201).json(course);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+ try {
+    const newCourse = await Course.create(req.body);
+    res.status(201).json({ course: newCourse }); // ✅ Must wrap in "course" key
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Course creation failed" });
   }
 };
 
