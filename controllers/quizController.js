@@ -1,0 +1,31 @@
+const Quiz = require("../models/Quiz");
+const Course = require("../models/Course");
+
+exports.addQuiz = async (req, res) => {
+  try {
+    const { courseId, questions } = req.body;
+
+    const quiz = await Quiz.create({
+      course: courseId,
+      questions
+    });
+
+    await Course.findByIdAndUpdate(courseId, {
+      $push: { quizzes: quiz._id }
+    });
+
+    res.status(201).json(quiz);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getQuiz = async (req, res) => {
+  try {
+    const quiz = await Quiz.findById(req.params.id);
+    if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+    res.json(quiz);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
