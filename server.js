@@ -42,3 +42,4 @@ app.use("/api/quiz-attempts", quizAttemptRoutes);
 
 const progressRoutes = require("./routes/progressRoutes");
 app.use("/api/progress", progressRoutes);
+

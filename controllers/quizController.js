@@ -2,23 +2,22 @@ const Quiz = require("../models/Quiz");
 const Course = require("../models/Course");
 
 exports.addQuiz = async (req, res) => {
+  const { id } = req.params;
+  const { title, questions } = req.body;
+
   try {
-    const { courseId, questions } = req.body;
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: "Course not found" });
 
-    const quiz = await Quiz.create({
-      course: courseId,
-      questions
-    });
+    course.quizzes.push({ title, questions });
+    await course.save();
 
-    await Course.findByIdAndUpdate(courseId, {
-      $push: { quizzes: quiz._id }
-    });
-
-    res.status(201).json(quiz);
+    res.status(201).json({ message: "Quiz added" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 };
+
 
 exports.getQuiz = async (req, res) => {
   try {
