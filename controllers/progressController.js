@@ -1,4 +1,5 @@
 const LessonProgress = require("../models/LessonProgress");
+const Progress = require("../models/Progress");
 
 exports.markLessonComplete = async (req, res) => {
   try {
@@ -22,6 +23,20 @@ exports.getCompletedLessons = async (req, res) => {
     const userId = req.user.userId;
     const progress = await LessonProgress.find({ user: userId, completed: true }).populate("lesson");
     res.json(progress);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+exports.getProgress = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const courseId = req.params.id;
+
+    const progress = await Progress.findOne({ user: userId, course: courseId });
+
+    res.json(progress || { completedLessons: [] });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
