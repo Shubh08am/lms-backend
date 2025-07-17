@@ -3,16 +3,21 @@ const QuizAttempt = require("../models/QuizAttempt");
 
 exports.submitQuiz = async (req, res) => {
   try {
-    const { answers } = req.body;
+    const { answers } = req.body;  // Array of selected indexes
     const quizId = req.params.id;
     const userId = req.user.userId;
 
     const quiz = await Quiz.findById(quizId);
     if (!quiz) return res.status(404).json({ message: "Quiz not found" });
 
+    if (!Array.isArray(answers) || answers.length !== quiz.questions.length) {
+      return res.status(400).json({ message: "Invalid number of answers" });
+    }
+
     let score = 0;
+
     quiz.questions.forEach((q, idx) => {
-      if (q.correctAnswer === answers[idx]) {
+      if (q.correctIndex === answers[idx]) {
         score++;
       }
     });
@@ -24,11 +29,16 @@ exports.submitQuiz = async (req, res) => {
       score
     });
 
-    res.json({ message: "Quiz submitted", score, total: quiz.questions.length });
+    res.json({
+      message: "Quiz submitted",
+      score,
+      total: quiz.questions.length
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 exports.getUserAttempts = async (req, res) => {
   try {
