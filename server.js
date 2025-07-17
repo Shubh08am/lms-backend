@@ -43,3 +43,4 @@ app.use("/api/quiz-attempts", quizAttemptRoutes);
 const progressRoutes = require("./routes/progressRoutes");
 app.use("/api/progress", progressRoutes);
 
+app.use("/lessons", require("./routes/lessonRoutes"));

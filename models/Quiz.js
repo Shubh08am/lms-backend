@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const questionSchema = new mongoose.Schema({
   text: String,
   options: [String],           // Array of options (A, B, C, D)
-  correctAnswer: Number        // Index of the correct option
+  correctIndex: Number        // Index of the correct option
 });
 
 const quizSchema = new mongoose.Schema({
